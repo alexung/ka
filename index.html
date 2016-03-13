@@ -22,12 +22,24 @@
   return x;
 }
     </div>
+    <div class="output"></div>
+    <script   src="https://code.jquery.com/jquery-2.2.1.js"   integrity="sha256-eNcUzO3jsv0XlJLveFEkbB8bA7/CroNpNVk3XpmnwHc=" crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="src/ace/src-min-noconflict/ace.js"></script>
     <script>
+      //editor
       var editor = ace.edit("editor");
       editor.setTheme("ace/theme/monokai");
       editor.getSession().setMode("ace/mode/javascript");
+
+      // for each char typed
+      var lastentry = "";
+
+      $('#editor').keyup(function(event) {
+          console.log('lol');
+          $('.output').append('TEST '+$(this).val()+"<br>");
+          lastentry = $('#editor').val()
+      });
     </script>
   </body>
 </html>
