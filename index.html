@@ -56,7 +56,10 @@
       editor.getSession().setMode("ace/mode/javascript");
 
       //acorn parser
-      var acEx = acorn.parse(editor.getValue());
+      tokens = [];
+      var acEx = acorn.parse(editor.getValue(), {
+        onToken: tokens
+      });
       console.log('acorn example: ', acEx);
 
       // console.log(editor.getValue()); // returns a string value of editor
@@ -117,7 +120,7 @@
         }
 
         if (!structuralIntegrity) {
-          console.log(message, 'structural integrity is false');
+          // console.log(message, 'structural integrity is false');
           var notification = document.getElementsByClassName('roughStructure');
           if (notification[0].style.display = 'none') {
             notification[0].style.display = 'block';
