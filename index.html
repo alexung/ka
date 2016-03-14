@@ -55,9 +55,14 @@
       editor.setTheme("ace/theme/monokai");
       editor.getSession().setMode("ace/mode/javascript");
 
+      //acorn parser
+      var acEx = acorn.parse(editor.getValue());
+      console.log('acorn example: ', acEx);
+
       // console.log(editor.getValue()); // returns a string value of editor
       //to make this appear from the document.load()
       $(document).ready(function(){
+
         //whitelist functionality
         whiteList(getEditorCode(), 'for');
         whiteList(getEditorCode(), 'var');
@@ -125,6 +130,7 @@
         }
       }
 
+      // default testing our code function
       function testingCode(editorCode, codeSearchFor) {
         var notification = document.getElementsByClassName(codeSearchFor);
 
