@@ -31,8 +31,12 @@
     </ul>
 
     <ul>
+      <!-- instead of adding in notifications here, we can input them into the function and append it to our ul -->
       <li class="for">Great job!  We input a for loop!</li>
       <li class="var">Good going!  We have a variable declaration!</li>
+      <li class="while">We're trying to avoid while loops! Please remove!</li>
+      <li class="if">Let's stray away from 'if' statements! Please remove!</li>
+      <li class="roughStructure">There is no if statement within a for loop!</li>
     </ul>
     <div id="editor">function foo(items) {
   for (var i = 0; i < 5; i++) {
@@ -54,19 +58,31 @@
       // console.log(editor.getValue()); // returns a string value of editor
       //to make this appear from the document.load()
       $(document).ready(function(){
-        testingForLoop();
-        testingVarDec();
+        //whitelist functionality
+        whiteList(getEditorCode(), 'for');
+        whiteList(getEditorCode(), 'var');
+
+        //blacklist functionality
+        blackList(getEditorCode(), 'while');
+        blackList(getEditorCode(), 'if');
+
+        //rough structure
+        roughStructure(getEditorCode(), ['for', 'if'], 'There is no if statement within a for loop!')
       });
 
       //on each key entered...
       $('#editor').keyup(function(event) {
 
-          //whitelist functionality
-          testingForLoop();
-          testingVarDec();
-          //blacklist functionality
+        //whitelist functionality
+        whiteList(getEditorCode(), 'for');
+        whiteList(getEditorCode(), 'var');
 
-          //determine rough structure of program
+        //blacklist functionality
+        blackList(getEditorCode(), 'while');
+        blackList(getEditorCode(), 'if');
+
+        //determine rough structure of program
+        roughStructure(getEditorCode(), ['for', 'if'], 'There is no if statement within a for loop!')
       });
 
       function getEditorCode() {
@@ -76,26 +92,48 @@
         return textEditor;
       }
 
-
-      // modular function to test for loops
-      function testingForLoop() {
-        return testing(getEditorCode(), 'for');
+      //whitelist testing
+      function whiteList(editorCode, codeSearchFor) {
+        return testingCode(editorCode, codeSearchFor);
       }
 
-      function testingVarDec() {
-        return testing(getEditorCode(), 'var');
+      //blacklist testing
+      function blackList(editorCode, codeSearchFor) {
+        return testingCode(editorCode, codeSearchFor);
       }
 
-      //modular function for testing for any code in our text editor
-      function testing(editorCode, codeSearchFor) {
+      //determine rough structure
+      function roughStructure(editorCode, arrCodeSearchFor, message) {
+        var structuralIntegrity = true;
+        for (var i = 0; i < arrCodeSearchFor.length; i++) {
+          if (editorCode.search(arrCodeSearchFor[i]) == -1) {
+            structuralIntegrity = false;
+          }
+        }
+
+        if (!structuralIntegrity) {
+          console.log(message, 'structural integrity is false');
+          var notification = document.getElementsByClassName('roughStructure');
+          if (notification[0].style.display = 'none') {
+            notification[0].style.display = 'block';
+          }
+        } else {
+          var notification = document.getElementsByClassName('roughStructure');
+          if (notification[0].style.display = 'block') {
+            notification[0].style.display = 'none';
+          }
+        }
+      }
+
+      function testingCode(editorCode, codeSearchFor) {
         var notification = document.getElementsByClassName(codeSearchFor);
 
-        //go through splitWords and if we find 'for', then show notification
+        //go through splitWords and if we find codeSearchFor, then show notification
         if (editorCode.search(codeSearchFor) !== -1) {
           if (notification[0].style.display = 'none') {
             notification[0].style.display = 'block';
           }
-        //go through splitWords and if we DON'T find 'for', then hide the notification
+        //go through splitWords and if we DON'T find codeSearchFor, then hide the notification
         } else {
           if (notification[0].style.display = 'block') {
             notification[0].style.display = 'none';
