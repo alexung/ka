@@ -32,7 +32,7 @@
 
     <ul>
       <li class="for">Great job!  We input a for loop!</li>
-      <li class=
+      <li class="var">Good going!  We have a variable declaration!</li>
     </ul>
     <div id="editor">function foo(items) {
   for (var i = 0; i < 5; i++) {
@@ -55,42 +55,50 @@
       //to make this appear from the document.load()
       $(document).ready(function(){
         testingForLoop();
+        testingVarDec();
       });
 
       //on each key entered...
       $('#editor').keyup(function(event) {
 
-          // $('.output').append(acorn.parse(editor.getValue())+"<br>");
-
           //whitelist functionality
           testingForLoop();
-
+          testingVarDec();
           //blacklist functionality
 
           //determine rough structure of program
       });
 
-      function testingForLoop() {
+      function getEditorCode() {
         //get input in text editor
         var textEditor = editor.getValue();
-
         //split every word up in text editor
         var splitWords = textEditor.split(' ');
-        // console.log('splitWords: ', splitWords);
+        return splitWords;
+      }
 
-        //get divs with notification class on them
-        var notification = document.getElementsByClassName('for');
+
+      // modular function to test for loops
+      function testingForLoop() {
+        return testing(getEditorCode(), 'for');
+      }
+
+      function testingVarDec() {
+        return testing(getEditorCode(), 'var');
+      }
+
+      //modular function for testing for any code in our text editor
+      function testing(editorCode, codeSearchFor) {
+        var notification = document.getElementsByClassName(codeSearchFor);
+
 
         //go through splitWords and if we find 'for', then show notification
-        if (splitWords.indexOf("for") !== -1) {
+        if (editorCode.indexOf(codeSearchFor) !== -1) {
           if (notification[0].style.display = 'none') {
             notification[0].style.display = 'block';
           }
-        }
-
         //go through splitWords and if we DON'T find 'for', then hide the notification
-        if (splitWords.indexOf("for") === -1)  {
-          console.log(notification);
+        } else {
           if (notification[0].style.display = 'block') {
             notification[0].style.display = 'none';
           }
