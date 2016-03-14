@@ -72,8 +72,7 @@
       function getEditorCode() {
         //get input in text editor
         var textEditor = editor.getValue();
-        //split every word up in text editor
-        // var splitWords = textEditor.split(' ');
+
         return textEditor;
       }
 
@@ -90,7 +89,6 @@
       //modular function for testing for any code in our text editor
       function testing(editorCode, codeSearchFor) {
         var notification = document.getElementsByClassName(codeSearchFor);
-
 
         //go through splitWords and if we find 'for', then show notification
         if (editorCode.search(codeSearchFor) !== -1) {
