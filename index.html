@@ -74,20 +74,33 @@
       // var treeTypes = [];
 
       //depth first search
-      function parseThroughTree() {
+      function parseTree() {
         //local var to hold the types in our tree
         var treeTypes = [];
-        var acEx = acorn.parse(editor.getValue());
-        var current = acEx;
+
+        var current = acorn.parse(editor.getValue());
         //parse through tree
         while (current.body || current.consequent) {
-          
+          if (Array.isArray(current.body)) {
+            if (current.body.type) {
+
+              treeTypes.push(current.body.type);
+              current = current.body || current.consequent;
+              continue;
+            }
+          }
+
+          if (current.consequent.type) {
+            treeTypes.push(current.consequent.type);
+            current = current.body || current.consequent;
+            continue;
+          }
+
+
         }
 
-
         //go through and get every node type and then create a new hash and push the hash into the arr
-
-
+        return treeTypes;
 
       }
       //can do acEx.type to get what type it is. root of BT is 'Program'
