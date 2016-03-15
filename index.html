@@ -59,6 +59,7 @@
     <script type="text/javascript" src="node_modules/acorn/dist/acorn_loose.js" charset="UTF-8"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script>
+      'use strict';
       //editor
       var editor = ace.edit("editor");
       editor.setTheme("ace/theme/monokai");
@@ -70,6 +71,17 @@
         onToken: tokens
       });
       console.log('acorn example: ', acEx);
+
+      //global var to hold tree types
+      treeTypes = [];
+
+      //depth first search
+      function parseThroughTree() {
+        //parse through tree
+
+        //go through and g
+
+      }
       //can do acEx.type to get what type it is. root of BT is 'Program'
       //'BlockStatement' is anything enclosed in {}
 
