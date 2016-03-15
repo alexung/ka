@@ -67,30 +67,30 @@
       $(document).ready(function(){
 
         //whitelist functionality
-        whiteList(getEditorCode(), 'for');
-        whiteList(getEditorCode(), 'var');
+        api.whiteList(getEditorCode(), 'for');
+        api.whiteList(getEditorCode(), 'var');
 
         //blacklist functionality
-        blackList(getEditorCode(), 'while');
-        blackList(getEditorCode(), 'if');
+        api.blackList(getEditorCode(), 'while');
+        api.blackList(getEditorCode(), 'if');
 
         //rough structure
-        roughStructure(getEditorCode(), ['for', 'if'], 'There is no if statement within a for loop!')
+        api.roughStructure(getEditorCode(), ['for', 'if'], 'There is no if statement within a for loop!')
       });
 
       //on each key entered...
       $('#editor').keyup(function(event) {
 
         //whitelist functionality
-        whiteList(getEditorCode(), 'for');
-        whiteList(getEditorCode(), 'var');
+        api.whiteList(getEditorCode(), 'for');
+        api.whiteList(getEditorCode(), 'var');
 
         //blacklist functionality
-        blackList(getEditorCode(), 'while');
-        blackList(getEditorCode(), 'if');
+        api.blackList(getEditorCode(), 'while');
+        api.blackList(getEditorCode(), 'if');
 
         //determine rough structure of program
-        roughStructure(getEditorCode(), ['for', 'if'], 'There is no if statement within a for loop!')
+        api.roughStructure(getEditorCode(), ['for', 'if'], 'There is no if statement within a for loop!')
       });
 
       function getEditorCode() {
@@ -100,52 +100,53 @@
         return textEditor;
       }
 
+      var api = {
       //whitelist testing
-      function whiteList(editorCode, codeSearchFor) {
-        return testingCode(editorCode, codeSearchFor);
-      }
+        whiteList: function(editorCode, codeSearchFor) {
+          return this.testingCode(editorCode, codeSearchFor);
+        },
+        //blacklist testing
+        blackList: function(editorCode, codeSearchFor) {
+          return this.testingCode(editorCode, codeSearchFor);
+        },
 
-      //blacklist testing
-      function blackList(editorCode, codeSearchFor) {
-        return testingCode(editorCode, codeSearchFor);
-      }
-
-      //determine rough structure
-      function roughStructure(editorCode, arrCodeSearchFor, message) {
-        var structuralIntegrity = true;
-        for (var i = 0; i < arrCodeSearchFor.length; i++) {
-          if (editorCode.search(arrCodeSearchFor[i]) == -1) {
-            structuralIntegrity = false;
+        //determine rough structure
+        roughStructure: function(editorCode, arrCodeSearchFor, message) {
+          var structuralIntegrity = true;
+          for (var i = 0; i < arrCodeSearchFor.length; i++) {
+            if (editorCode.search(arrCodeSearchFor[i]) == -1) {
+              structuralIntegrity = false;
+            }
           }
-        }
 
-        if (!structuralIntegrity) {
-          // console.log(message, 'structural integrity is false');
-          var notification = document.getElementsByClassName('roughStructure');
-          if (notification[0].style.display = 'none') {
-            notification[0].style.display = 'block';
+          if (!structuralIntegrity) {
+            // console.log(message, 'structural integrity is false');
+            var notification = document.getElementsByClassName('roughStructure');
+            if (notification[0].style.display = 'none') {
+              notification[0].style.display = 'block';
+            }
+          } else {
+            var notification = document.getElementsByClassName('roughStructure');
+            if (notification[0].style.display = 'block') {
+              notification[0].style.display = 'none';
+            }
           }
-        } else {
-          var notification = document.getElementsByClassName('roughStructure');
-          if (notification[0].style.display = 'block') {
-            notification[0].style.display = 'none';
-          }
-        }
-      }
+        },
 
-      // default testing our code function
-      function testingCode(editorCode, codeSearchFor) {
-        var notification = document.getElementsByClassName(codeSearchFor);
+        // default testing our code function
+        testingCode: function(editorCode, codeSearchFor) {
+          var notification = document.getElementsByClassName(codeSearchFor);
 
-        //go through splitWords and if we find codeSearchFor, then show notification
-        if (editorCode.search(codeSearchFor) !== -1) {
-          if (notification[0].style.display = 'none') {
-            notification[0].style.display = 'block';
-          }
-        //go through splitWords and if we DON'T find codeSearchFor, then hide the notification
-        } else {
-          if (notification[0].style.display = 'block') {
-            notification[0].style.display = 'none';
+          //go through splitWords and if we find codeSearchFor, then show notification
+          if (editorCode.search(codeSearchFor) !== -1) {
+            if (notification[0].style.display = 'none') {
+              notification[0].style.display = 'block';
+            }
+          //go through splitWords and if we DON'T find codeSearchFor, then hide the notification
+          } else {
+            if (notification[0].style.display = 'block') {
+              notification[0].style.display = 'none';
+            }
           }
         }
       }
