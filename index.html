@@ -74,30 +74,41 @@
       // var treeTypes = [];
 
       //depth first search
+      var treeTypes = [];
+
       function parseTree(tree) {
         //local var to hold the types in our tree
-        var treeTypes = [];
+        // var treeTypes = [];
 
         var current = tree;
         //parse through tree
         while (current.body || current.consequent) {
+
           if (Array.isArray(current.body)) {
             for (var i = 0; i < current.body.length; i++) {
               parseTree(current.body[i]);
             }
-
-            if (current.body.type) {
-              treeTypes.push(current.body.type);
-              current = current.body || current.consequent;
-              continue;
-            }
           }
 
-          if (current.consequent.type) {
-            treeTypes.push(current.consequent.type);
+          // if(Array.isArray(current.consequent)) {
+          //   for (var j = 0; j < current.consequent.length; j++) {
+          //     parseTree(current.consequent[j]);
+          //   }
+          // }
+
+          if (current.type) {
+            treeTypes.push(current.type);
             current = current.body || current.consequent;
             continue;
           }
+
+          if (current.body.type === undefined) {
+            continue;
+          }
+
+          // if (current.consequent.type === undefined) {
+          //   continue;
+          // }
 
         }
 
