@@ -40,7 +40,16 @@
     </ul>
     <div id="editor">function foo(items) {
   for (var i = 0; i < 5; i++) {
+    for (var j = 0; j < 5; j++) {
+      console.log(j);
+    }
     console.log(i);
+  }
+  if ('test' === 'test') {
+    console.log('lol');
+  }
+  if ('test' === 'test') {
+    console.log('lol');
   }
 }</div>
     <div class="output"></div>
@@ -61,6 +70,36 @@
         onToken: tokens
       });
       console.log('acorn example: ', acEx);
+      //can do acEx.type to get what type it is. root of BT is 'Program'
+      //'BlockStatement' is anything enclosed in {}
+
+      //acEx.type ==> 'Program'
+      //acEx.body[0].type ==> 'FunctionDeclaration'
+      //acEx.body[0].body.type ==> 'BlockStatement'
+      //acEx.body[0].body.body[0].type ==> 'ForStatement'
+      //acEx.body[0].body.body[0].body.type ==> 'BlockStatement'
+      //acEx.body[0].body.body[0].body.body[0].type ==> 'ForStatement'
+      //acEx.body[0].body.body[0].body.body[0].body.type ==> 'BlockStatement'
+      //acEx.body[0].body.body[0].body.body[0].body.body[0].type ==> 'ExpressionStatement'... this is console.log(j)
+        //to find arguments, can call acEx.body[0].body.body[0].body.body[0].body.body[0].expression.arguments[0].name ==> "j"
+
+      //========
+      //THIS NEXT NODE IS WHERE THE BRANCH ENDS ON THE TREE!!!!!! THERE'S NO MORE 'BODY' THAT CAN BE CALLED AFTER acEx.body[0].body.body[0].body.body[1]
+      //========
+      //acEx.body[0].body.body[0].body.body[1].type ==> 'ExpressionStatement'... this is console.log(i)
+        //to find args, can call acEx.body[0].body.body[0].body.body[1].expression.arguments[0].name ==> 'i'
+
+
+      // 2nd two nodes in acEx.body[0].body are if statement
+      //acEx.body[0].body.body[1].type ==> 'IfStatement'
+      //acEx.body[0].body.body[2].type ==> 'IfStatement'
+
+
+      //** WILL ALWAYS BE BODY[index] FOLLOWED BY BODY (BLOCK STATEMENT) FOLLOWED BY BODY[index]
+
+
+
+      console.log('acorn getting for loop: ', acEx.body[0].body.body[0].type);
 
       // console.log(editor.getValue()); // returns a string value of editor
       //to make this appear from the document.load()
