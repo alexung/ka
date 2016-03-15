@@ -74,16 +74,19 @@
       // var treeTypes = [];
 
       //depth first search
-      function parseTree() {
+      function parseTree(tree) {
         //local var to hold the types in our tree
         var treeTypes = [];
 
-        var current = acorn.parse(editor.getValue());
+        var current = tree;
         //parse through tree
         while (current.body || current.consequent) {
           if (Array.isArray(current.body)) {
-            if (current.body.type) {
+            for (var i = 0; i < current.body.length; i++) {
+              parseTree(current.body[i]);
+            }
 
+            if (current.body.type) {
               treeTypes.push(current.body.type);
               current = current.body || current.consequent;
               continue;
@@ -95,7 +98,6 @@
             current = current.body || current.consequent;
             continue;
           }
-
 
         }
 
