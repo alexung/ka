@@ -66,14 +66,12 @@
       editor.getSession().setMode("ace/mode/javascript");
 
       //acorn parser
-      tokens = [];
-      var acEx = acorn.parse(editor.getValue(), {
-        onToken: tokens
-      });
+      var tokens = [];
+      var acEx = acorn.parse(editor.getValue());
       console.log('acorn example: ', acEx);
 
       //global var to hold tree types
-      treeTypes = [];
+      var treeTypes = [];
 
       //depth first search
       function parseThroughTree() {
@@ -93,6 +91,7 @@
       //acEx.body[0].body.body[0].body.body[0].type ==> 'ForStatement'
       //acEx.body[0].body.body[0].body.body[0].body.type ==> 'BlockStatement'
       //acEx.body[0].body.body[0].body.body[0].body.body[0].type ==> 'ExpressionStatement'... this is console.log(j)
+        // the 'ExpressionStatement' is on the same branch as the 'BlockStatement', which means that the 'ExpressionStatement' is INSIDE the 'BlockStatement'
         //to find arguments, can call acEx.body[0].body.body[0].body.body[0].body.body[0].expression.arguments[0].name ==> "j"
 
       //========
