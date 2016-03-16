@@ -41,6 +41,12 @@
     <div id="editor">function foo(items) {
   for (var i = 0; i < 5; i++) {
     for (var j = 0; j < 5; j++) {
+      if ('lol' == 'lol') {
+        console.log('lolol!!')
+        if ('lolool' == 'lolool') {
+          console.log('lololol!!!');
+        }
+      }
       console.log(j);
     }
     console.log(i);
@@ -74,39 +80,43 @@
       // var treeTypes = [];
 
       //depth first search
-      var treeTypes = [];
+      //var treeTypes = [];
+      function goThroughTree(tree) {
+        var treeTypes = [];
 
-      function parseTree(tree) {
-        //local var to hold the types in our tree
-        // var treeTypes = [];
+        function parseTree(tree) {
+          //local var to hold the types in our tree
 
-        var current = tree;
-        //parse through tree
-        while (current.body || current.consequent) {
+          var current = tree;
 
-          current = current.body || current.consequent;
-          console.log("current is: ", current);
+          //parse through tree
+          while (current.body || current.consequent) {
 
-          if (Array.isArray(current)) {
-            for (var i = 0; i < current.length; i++) {
-              parseTree(current[i]);
+            current = current.body || current.consequent;
+            console.log("current is: ", current);
+
+            if (Array.isArray(current)) {
+              for (var i = 0; i < current.length; i++) {
+                console.log('parseTree is triggered with: ', current[i]);
+                parseTree(current[i]);
+                treeTypes.push(current[i].type);
+              }
             }
-          }
-          //  else if (Array.isArray(current.consequent)) {
-          //   for (var j = 0; j < current.consequent.length; j++) {
-          //     parseTree(current.consequent[j]);
-          //   }
-          // }
 
-          if (current.type) {
-            treeTypes.push(current.type);
-            // current = current.body || current.consequent;
-            continue;
+
+            if (current.type) {
+              console.log('current.type is: ', current.type);
+              treeTypes.push(current.type);
+            }
+
           }
+          //go through and get every node type and then create a new hash and push the hash into the arr
+          // return treeTypes;
 
         }
 
-        //go through and get every node type and then create a new hash and push the hash into the arr
+        parseTree(tree);
+
         return treeTypes;
 
       }
