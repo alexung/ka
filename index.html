@@ -84,13 +84,15 @@
         //parse through tree
         while (current.body || current.consequent) {
 
-          if (Array.isArray(current.body)) {
-            for (var i = 0; i < current.body.length; i++) {
-              parseTree(current.body[i]);
+          current = current.body || current.consequent;
+          console.log("current is: ", current);
+
+          if (Array.isArray(current)) {
+            for (var i = 0; i < current.length; i++) {
+              parseTree(current[i]);
             }
           }
-
-          // if(Array.isArray(current.consequent)) {
+          //  else if (Array.isArray(current.consequent)) {
           //   for (var j = 0; j < current.consequent.length; j++) {
           //     parseTree(current.consequent[j]);
           //   }
@@ -98,17 +100,9 @@
 
           if (current.type) {
             treeTypes.push(current.type);
-            current = current.body || current.consequent;
+            // current = current.body || current.consequent;
             continue;
           }
-
-          if (current.body.type === undefined) {
-            continue;
-          }
-
-          // if (current.consequent.type === undefined) {
-          //   continue;
-          // }
 
         }
 
