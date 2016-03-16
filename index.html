@@ -82,12 +82,12 @@
       //depth first search
       //var treeTypes = [];
       function goThroughTree(tree) {
+        //local var to hold the types in our tree
         var treeTypes = [];
 
-        function parseTree(tree) {
-          //local var to hold the types in our tree
+        function parseTree(node) {
 
-          var current = tree;
+          var current = node;
 
           //parse through tree
           while (current.body || current.consequent) {
@@ -98,11 +98,10 @@
             if (Array.isArray(current)) {
               for (var i = 0; i < current.length; i++) {
                 console.log('parseTree is triggered with: ', current[i]);
-                parseTree(current[i]);
                 treeTypes.push(current[i].type);
+                parseTree(current[i]);
               }
             }
-
 
             if (current.type) {
               console.log('current.type is: ', current.type);
@@ -120,6 +119,8 @@
         return treeTypes;
 
       }
+
+
       //can do acEx.type to get what type it is. root of BT is 'Program'
       //'BlockStatement' is anything enclosed in {}
 
