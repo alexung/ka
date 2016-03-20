@@ -37,7 +37,7 @@ function init() {
   blackList(treeArr, 'BlockStatement', notifArr);
 
   //rough structure
-  checkForStructure(treeArr, ['ForStatement', 'IfStatement'], notifArr)
+  checkForStructure(treeArr, ['ForStatement', 'IfStatement'], notifArr);
 
   // console.log('NOTIFARR', notifArr);
   notifArr = removeDuplicates(notifArr);
@@ -90,13 +90,32 @@ function setUpStructure(tree) {
 
 }
 
+//param1: treeTypes is the arr we get of every type once we go through tree
+//param2: arrOfTypes is what we're checking for
+//param3: notifArr is the arr we push the notifications (yes you have correct structure/
+          //no you do not have correct structure) into notifArr
+
 function checkForStructure(treeTypes, arrOfTypes, notifArr) {
+  console.log('treeTypes: ', treeTypes.length);
+  var origCopyArrTypes = arrOfTypes.slice(0);
+  var notFound = "Sorry, we don't have a ";
+  if (treeTypes.length == 0) {
+    for (var k = origCopyArrTypes.length -1; k >= 0; k--) {
+      if (k == (origCopyArrTypes.length-1)) {
+        notFound += origCopyArrTypes[k];
+      } else {
+        notFound+= " within a " + origCopyArrTypes[k];
+      }
+    }
+    notFound+= '.  Please implement this!';
+    notifArr.push(notFound);
+    return;
+  }
 
   var found = false,
       start = treeTypes[0][1],
       end = treeTypes[0][2],
-      startEndArr = [],
-      origCopyArrTypes = arrOfTypes.slice(0);
+      startEndArr = [];
 
   function recursiveGetStructure(arrOfTreeTypes, arrOfThingsToCheck) {
 
@@ -133,7 +152,6 @@ function checkForStructure(treeTypes, arrOfTypes, notifArr) {
   recursiveGetStructure(treeTypes, arrOfTypes)
 
   var ifFound = "Awesome!  There is a ";
-  var notFound = "Sorry, we don't have a ";
   //console.log("origCopyArrTypes", origCopyArrTypes);
   if (found) {
     for (var j = origCopyArrTypes.length -1; j >= 0; j--) {
