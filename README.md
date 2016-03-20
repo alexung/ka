@@ -7,5 +7,5 @@ using:
 -ace
 
 next steps:
--Understand why the structure of treeTypes is the way it is
--turn treeTypes into an array with nested objects inside of it
+-Format everything into an api
+-Move JS into app.js and have a script tag to include it in html
