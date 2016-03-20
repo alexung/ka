@@ -185,16 +185,16 @@
         console.log("origCopyArrTypes", origCopyArrTypes);
         if (found) {
           for (var j = 0; j < origCopyArrTypes.length; j++) {
-            ifFound = ifFound + origCopyArrTypes[j] + ' and a ';
+            ifFound += origCopyArrTypes[j] + ' and a ';
           }
-          ifFound = ifFound + '.';
+          ifFound += '.';
           console.log(ifFound);
 
         } else {
           for (var k = 0; k < origCopyArrTypes.length; k++) {
-            notFound = notFound + origCopyArrTypes[k] + ' and a ';
+            notFound+= origCopyArrTypes[k] + ' and a ';
           }
-          notFound = notFound + '.';
+          notFound+= '.';
           console.log(notFound);
         }
       }
@@ -228,7 +228,7 @@
         blackList(treeArr, 'IfStatement');
 
         //rough structure
-        checkForStructure(treeArr, ['ForStatement', 'IfStatement', 'WhileStatement'])
+        checkForStructure(treeArr, ['ForStatement', 'IfStatement'])
 
       });
 
