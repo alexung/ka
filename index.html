@@ -30,13 +30,15 @@
 
     </ul>
 
-    <ul>
+    <h1>Notifications</h1>
+    <ul class="notifications">
       <!-- instead of adding in notifications here, we can input them into the function and append it to our ul -->
-      <li class="for">Great job!  We input a for loop!</li>
+<!--       <li class="for">Great job!  We input a for loop!</li>
       <li class="var">Good going!  We have a variable declaration!</li>
       <li class="while">We're trying to avoid while loops! Please remove!</li>
       <li class="if">Let's stray away from 'if' statements! Please remove!</li>
-      <li class="roughStructure">There is no if statement within a for loop!</li>
+      <li class="roughStructure">There is no if statement within a for loop!</li> -->
+
     </ul>
     <div id="editor">function foo(items) {
   for (var i = 0; i < 5; i++) {
@@ -222,9 +224,29 @@
         }
       }
 
+      function removeDuplicates(arr) {
+        var seen = {};
+        var result = [];
+
+        for (var i = 0; i < arr.length; i++) {
+            var sentence = arr[i];
+
+            if (sentence in seen) {
+                continue;
+            } else {
+                seen[sentence] = true;
+                result.push(arr[i]);
+            }
+        }
+
+        return result;
+    }
+
       $(document).ready(function(){
         var treeArr = setUpStructure(acEx);
         var notifArr = [];
+        //init notifcations as empty
+        $('.notifications').empty();
 
         //whitelist
         whiteList(treeArr, 'ForStatement', notifArr);
@@ -236,8 +258,15 @@
         //rough structure
         checkForStructure(treeArr, ['ForStatement', 'IfStatement', 'WhileStatement'], notifArr)
 
+        // console.log('NOTIFARR', notifArr);
+        notifArr = removeDuplicates(notifArr);
+        // console.log(notifArr);
+        //for loop iterating through my notifArr and appending them to ul
         for (var i = 0; i < notifArr.length; i++) {
+          var $li = $('<li />');
+          $li.append(notifArr[i]);
 
+          $('.notifications').append($li);
         }
 
       });
@@ -246,6 +275,10 @@
       $('#editor').keyup(function(event) {
         var treeArr = setUpStructure(acEx);
         var notifArr = [];
+        var condensedNotifArr = [];
+
+        //init notifcations as empty
+        $('.notifications').empty();
 
         //whitelist
         whiteList(treeArr, 'ForStatement', notifArr);
@@ -256,6 +289,16 @@
 
         //rough structure
         checkForStructure(treeArr, ['ForStatement', 'IfStatement', 'WhileStatement'], notifArr)
+
+        // console.log('NOTIFARR', notifArr);
+        notifArr = removeDuplicates(notifArr);
+        //for loop iterating through my notifArr and appending them to ul
+        for (var i = 0; i < notifArr.length; i++) {
+          var $li = $('<li />');
+          $li.append(notifArr[i]);
+
+          $('.notifications').append($li);
+        }
 
       });
 
