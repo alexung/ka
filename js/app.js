@@ -4,11 +4,11 @@ var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode("ace/mode/javascript");
 
-//**HAVE TO REMEMBER TO NOT PULL ACEX FROM THE GETGO.
+//**HAVE TO REMEMBER TO NOT PULL acornParsedTree FROM THE GETGO.
 //**REINSTATIATE IT EVERY TIME THE EDITOR IS HIT
 
 //acorn parser
-//var acEx = acorn.parse(editor.getValue());
+//var acornParsedTree = acorn.parse(editor.getValue());
 
 $(document).ready(function(){
   init();
@@ -20,8 +20,8 @@ $('#editor').keyup(function() {
 });
 
 function init() {
-  var acEx = acorn.parse(editor.getValue());
-  var treeArr = setUpStructure(acEx);
+  var acornParsedTree = acorn.parse(editor.getValue());
+  var treeArr = setUpStructure(acornParsedTree);
   var notifArr = [];
   //init notifications as empty
   console.log('we are initing again');
@@ -30,16 +30,13 @@ function init() {
   //whitelist
   whiteList(treeArr, 'ForStatement', notifArr);
   whiteList(treeArr, 'IfStatement', notifArr);
-  whiteList(treeArr, 'WhileStatement', notifArr);
 
   //blacklist
-  blackList(treeArr, 'IfStatement', notifArr);
-  blackList(treeArr, 'BlockStatement', notifArr);
+  blackList(treeArr, 'WhileStatement', notifArr);
 
   //rough structure
   checkForStructure(treeArr, ['ForStatement', 'IfStatement'], notifArr);
 
-  // console.log('NOTIFARR', notifArr);
   notifArr = removeDuplicates(notifArr);
   console.log(notifArr);
   //for loop iterating through my notifArr and appending them to ul
