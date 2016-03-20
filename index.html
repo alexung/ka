@@ -6,7 +6,7 @@
     <style type="text/css" media="screen">
     #editor {
         position: relative;
-        height: 300px;
+        height: 500px;
         width: 100%;
 /*        top: 0;
         right: 0;
@@ -30,17 +30,25 @@
 
     </ul>
 
-    <ul>
+    <h1>Notifications</h1>
+    <ul class="notifications">
       <!-- instead of adding in notifications here, we can input them into the function and append it to our ul -->
-      <li class="for">Great job!  We input a for loop!</li>
+<!--       <li class="for">Great job!  We input a for loop!</li>
       <li class="var">Good going!  We have a variable declaration!</li>
       <li class="while">We're trying to avoid while loops! Please remove!</li>
       <li class="if">Let's stray away from 'if' statements! Please remove!</li>
-      <li class="roughStructure">There is no if statement within a for loop!</li>
+      <li class="roughStructure">There is no if statement within a for loop!</li> -->
+
     </ul>
     <div id="editor">function foo(items) {
   for (var i = 0; i < 5; i++) {
     for (var j = 0; j < 5; j++) {
+      if ('lol' == 'lol') {
+        console.log('lolol!!')
+        if ('lolool' == 'lolool') {
+          console.log('lololol!!!');
+        }
+      }
       console.log(j);
     }
     console.log(i);
@@ -68,146 +76,282 @@
       //acorn parser
       var tokens = [];
       var acEx = acorn.parse(editor.getValue());
-      console.log('acorn example: ', acEx);
+      // console.log('acorn example: ', acEx);
 
-      //global var to hold tree types
-      var treeTypes = [];
+      //**SOLVES BLACKLIST AND WHITELIST, BUT NOT STRUCTURE...
 
-      //depth first search
-      function parseThroughTree() {
-        //parse through tree
+      // FOR ROUGH STRUCTURE
+      function setUpStructure(tree) {
+        //local var to hold the types in our tree
+        var treeTypes = [];
 
-        //go through and g
+        function parseTree(node) {
+
+          var current = node;
+
+          //parse through tree
+          while (current.body || current.consequent) {
+
+            current = current.body || current.consequent;
+            // console.log("current is: ", current);
+
+            if (Array.isArray(current)) {
+              for (var i = 0; i < current.length; i++) {
+                // console.log('parseTree is triggered with: ', current[i]);
+                treeTypes.push([current[i].type, current[i].start, current[i].end]);
+                parseTree(current[i]);
+              }
+            }
+
+            if (current.type) {
+              // console.log('current.type is: ', current.type);
+              treeTypes.push([current.type, current.start, current.end]);
+            }
+
+          }
+          //go through and get every node type and then create a new hash and push the hash into the arr
+          // return treeTypes;
+
+        }
+
+        parseTree(tree);
+
+        return treeTypes;
 
       }
-      //can do acEx.type to get what type it is. root of BT is 'Program'
-      //'BlockStatement' is anything enclosed in {}
 
-      //acEx.type ==> 'Program'
-      //acEx.body[0].type ==> 'FunctionDeclaration'
-        //acEx.body[0].body.type ==> 'BlockStatement'
-          //acEx.body[0].body.body[0].type ==> 'ForStatement'
-            //acEx.body[0].body.body[0].body.type ==> 'BlockStatement'
-              //acEx.body[0].body.body[0].body.body[1].type ==> 'ExpressionStatement'... this is console.log(i)
+      function checkForStructure(treeTypes, arrOfTypes, notifArr) {
+        //we can iterate through our treeTypes nested arr and check for the first item in the arr
+        //then check all other treeTypes[i][0] for the first type, then check all other
+        //items in the treeTypes to see if the second type is within the start/end bounds of the first  type,
+        //then continue on....
 
-              //acEx.body[0].body.body[0].body.body[0].type ==> 'ForStatement'
-                //acEx.body[0].body.body[0].body.body[0].body.type ==> 'BlockStatement'
-                  //acEx.body[0].body.body[0].body.body[0].body.body[0].type ==> 'ExpressionStatement'... this is console.log(j)
+        //nested for loops.
+        // 1 loop to go through tree types
+        // 1 loop to go through arrOfTypes we enter in
+        // if they're equal to one another, then
+        // continue looping through other things to find next item...
+        // and next item...
+        // if all are found, we'll return true
+        // if false, we'll return false
+        // var treeHash = {
+        //   "FunctionDeclaration": [0,8],
+        //   "ForStatement": [[1,4],[5,7]],
+        //   "IfStatement": [[2,3]]
+        // }
+        var found = false,
+            start = treeTypes[0][1],
+            end = treeTypes[0][2],
+            startEndArr = [],
+            origCopyArrTypes = arrOfTypes.slice(0);
 
-      //**to find arguments, can call acEx.body[0].body.body[0].body.body[0].body.body[0].expression.arguments[0].name ==> "j"**
+        function recursiveGetStructure(arrOfTreeTypes, arrOfThingsToCheck) {
 
-      //========
-      //THIS NEXT NODE IS WHERE THE BRANCH ENDS ON THE TREE!!!!!! THERE'S NO MORE 'BODY' THAT CAN BE CALLED AFTER acEx.body[0].body.body[0].body.body[1]
-      //========
+          for (var i = 0; i < treeTypes.length; i++) {
+            // console.log('old start and new:', start + ' ' + end);
+            if (treeTypes[i][0] === arrOfTypes[0] && treeTypes[i][1] >= start && treeTypes[i][2] <= end) {
+              // console.log('treeTypes[i][0]: ' + treeTypes[i][0] + ' and arrOfTypes[0] ' + arrOfTypes[0]);
+              // if statement to return out of function if expressionstatements are found more than once in a row
+              start = treeTypes[i][1];
+              end = treeTypes[i][2];
+              // console.log("new start and end for arrOfTypes[0]:", start + ' ' + end + ' ' + arrOfTypes[0]);
+              if (arrOfTypes.length == 1) {
+                found = true;
+                return;
+              }
 
-        //to find args, can call acEx.body[0].body.body[0].body.body[1].expression.arguments[0].name ==> 'i'
-
-
-      // 2nd two nodes in acEx.body[0].body are if statement
-      //acEx.body[0].body.body[1].type ==> 'IfStatement'
-        //acEx.body[0].body.body[1].consequent.type ==> "BlockStatement"
-          //acEx.body[0].body.body[1].consequent.body[0].type ==> "ExpressionStatement"
-
-      //acEx.body[0].body.body[2].type ==> 'IfStatement'
-        //acEx.body[0].body.body[2].consequent.type ==> "BlockStatement"
-          //acEx.body[0].body.body[2].consequent.body[0].type ==> "ExpressionStatement"
+              var temp = treeTypes.splice(i,1);
+              startEndArr.push(temp);
+              // console.log('arrOfTypes before: ', arrOfTypes);
+              arrOfTypes.shift();
+              // console.log('arrOfTypes after: ', arrOfTypes);
+              // if we got to last index of arrOfTypes and its a valid type, then we'll change found from false to true
 
 
 
-      //** WILL ALWAYS BE BODY[index] FOLLOWED BY BODY (BLOCK STATEMENT) FOLLOWED BY BODY[index]
+              recursiveGetStructure(arrOfTreeTypes, arrOfThingsToCheck);
+              //else if we get to last ind of arrOfTypes and its NOT nested within
+              //treeTypes, then we'll change found = false
+            }
+          }
 
+        }
 
+        recursiveGetStructure(treeTypes, arrOfTypes)
 
-      console.log('acorn getting for loop: ', acEx.body[0].body.body[0].type);
+        // console.log(found);
+        // return found;
+        var ifFound = "Awesome!  There is a ";
+        var notFound = "Sorry, we don't have a ";
+        console.log("origCopyArrTypes", origCopyArrTypes);
+        if (found) {
+          for (var j = origCopyArrTypes.length -1; j >= 0; j--) {
+            if (j == (origCopyArrTypes.length-1)) {
+              ifFound += origCopyArrTypes[j];
+            } else {
+              ifFound += " within a " + origCopyArrTypes[j];
+            }
+          }
+          ifFound += '.';
+          notifArr.push(ifFound);
 
-      // console.log(editor.getValue()); // returns a string value of editor
-      //to make this appear from the document.load()
+        } else {
+          for (var k = origCopyArrTypes.length -1; k >= 0; k--) {
+            if (k == (origCopyArrTypes.length-1)) {
+              notFound += origCopyArrTypes[k];
+            } else {
+              notFound+= " within a " + origCopyArrTypes[k];
+            }
+          }
+          notFound+= '.  Please implement this!';
+          notifArr.push(notFound);
+        }
+      }
+
+      function whiteList(treeTypes, statementSearchingFor, notifArr) {
+        for (var i = 0; i < treeTypes.length; i++) {
+          if (treeTypes[i][0] === statementSearchingFor) {
+            notifArr.push("We were looking for " + statementSearchingFor + " to exist!  Congrats!");
+          }
+        }
+      }
+
+      function blackList(treeTypes, statementSearchingFor, notifArr) {
+        for (var i = 0; i < treeTypes.length; i++) {
+          if (treeTypes[i][0] === statementSearchingFor) {
+            notifArr.push("We were NOT looking for you to have " + statementSearchingFor + " in your code!  Please remove.");
+          }
+        }
+      }
+
+      function removeDuplicates(arr) {
+        var seen = {};
+        var result = [];
+
+        for (var i = 0; i < arr.length; i++) {
+            var sentence = arr[i];
+
+            if (sentence in seen) {
+                continue;
+            } else {
+                seen[sentence] = true;
+                result.push(arr[i]);
+            }
+        }
+
+        return result;
+    }
+
       $(document).ready(function(){
+        var treeArr = setUpStructure(acEx);
+        var notifArr = [];
+        //init notifcations as empty
+        $('.notifications').empty();
 
-        //whitelist functionality
-        api.whiteList(getEditorCode(), 'for');
-        api.whiteList(getEditorCode(), 'var');
+        //whitelist
+        whiteList(treeArr, 'ForStatement', notifArr);
+        whiteList(treeArr, 'IfStatement', notifArr)
 
-        //blacklist functionality
-        api.blackList(getEditorCode(), 'while');
-        api.blackList(getEditorCode(), 'if');
+        //blacklist
+        blackList(treeArr, 'IfStatement', notifArr);
 
         //rough structure
-        api.roughStructure(getEditorCode(), ['for', 'if'], 'There is no if statement within a for loop!')
+        checkForStructure(treeArr, ['ForStatement', 'IfStatement', 'WhileStatement'], notifArr)
+
+        // console.log('NOTIFARR', notifArr);
+        notifArr = removeDuplicates(notifArr);
+        // console.log(notifArr);
+        //for loop iterating through my notifArr and appending them to ul
+        for (var i = 0; i < notifArr.length; i++) {
+          var $li = $('<li />');
+          $li.append(notifArr[i]);
+
+          $('.notifications').append($li);
+        }
+
       });
 
       //on each key entered...
       $('#editor').keyup(function(event) {
+        var treeArr = setUpStructure(acEx);
+        var notifArr = [];
+        var condensedNotifArr = [];
 
-        //whitelist functionality
-        api.whiteList(getEditorCode(), 'for');
-        api.whiteList(getEditorCode(), 'var');
+        //init notifcations as empty
+        $('.notifications').empty();
 
-        //blacklist functionality
-        api.blackList(getEditorCode(), 'while');
-        api.blackList(getEditorCode(), 'if');
+        //whitelist
+        whiteList(treeArr, 'ForStatement', notifArr);
+        whiteList(treeArr, 'IfStatement', notifArr)
 
-        //determine rough structure of program
-        api.roughStructure(getEditorCode(), ['for', 'if'], 'There is no if statement within a for loop!')
+        //blacklist
+        blackList(treeArr, 'IfStatement', notifArr);
+
+        //rough structure
+        checkForStructure(treeArr, ['ForStatement', 'IfStatement', 'WhileStatement'], notifArr)
+
+        // console.log('NOTIFARR', notifArr);
+        notifArr = removeDuplicates(notifArr);
+        //for loop iterating through my notifArr and appending them to ul
+        for (var i = 0; i < notifArr.length; i++) {
+          var $li = $('<li />');
+          $li.append(notifArr[i]);
+
+          $('.notifications').append($li);
+        }
+
       });
 
-      function getEditorCode() {
-        //get input in text editor
-        var textEditor = editor.getValue();
+      // var api = {
+      // //whitelist testing
+      //   whiteList: function(editorCode, codeSearchFor) {
+      //     return this.testingCode(editorCode, codeSearchFor);
+      //   },
+      //   //blacklist testing
+      //   blackList: function(editorCode, codeSearchFor) {
+      //     return this.testingCode(editorCode, codeSearchFor);
+      //   },
 
-        return textEditor;
-      }
+      //   //determine rough structure
+      //   roughStructure: function(editorCode, arrCodeSearchFor, message) {
+      //     var structuralIntegrity = true;
+      //     for (var i = 0; i < arrCodeSearchFor.length; i++) {
+      //       if (editorCode.search(arrCodeSearchFor[i]) == -1) {
+      //         structuralIntegrity = false;
+      //       }
+      //     }
 
-      var api = {
-      //whitelist testing
-        whiteList: function(editorCode, codeSearchFor) {
-          return this.testingCode(editorCode, codeSearchFor);
-        },
-        //blacklist testing
-        blackList: function(editorCode, codeSearchFor) {
-          return this.testingCode(editorCode, codeSearchFor);
-        },
+      //     if (!structuralIntegrity) {
+      //       // console.log(message, 'structural integrity is false');
+      //       var notification = document.getElementsByClassName('roughStructure');
+      //       if (notification[0].style.display = 'none') {
+      //         notification[0].style.display = 'block';
+      //       }
+      //     } else {
+      //       var notification = document.getElementsByClassName('roughStructure');
+      //       if (notification[0].style.display = 'block') {
+      //         notification[0].style.display = 'none';
+      //       }
+      //     }
+      //   },
 
-        //determine rough structure
-        roughStructure: function(editorCode, arrCodeSearchFor, message) {
-          var structuralIntegrity = true;
-          for (var i = 0; i < arrCodeSearchFor.length; i++) {
-            if (editorCode.search(arrCodeSearchFor[i]) == -1) {
-              structuralIntegrity = false;
-            }
-          }
+      //   // default testing our code function
+      //   testingCode: function(editorCode, codeSearchFor) {
+      //     var notification = document.getElementsByClassName(codeSearchFor);
 
-          if (!structuralIntegrity) {
-            // console.log(message, 'structural integrity is false');
-            var notification = document.getElementsByClassName('roughStructure');
-            if (notification[0].style.display = 'none') {
-              notification[0].style.display = 'block';
-            }
-          } else {
-            var notification = document.getElementsByClassName('roughStructure');
-            if (notification[0].style.display = 'block') {
-              notification[0].style.display = 'none';
-            }
-          }
-        },
-
-        // default testing our code function
-        testingCode: function(editorCode, codeSearchFor) {
-          var notification = document.getElementsByClassName(codeSearchFor);
-
-          //go through splitWords and if we find codeSearchFor, then show notification
-          if (editorCode.search(codeSearchFor) !== -1) {
-            if (notification[0].style.display = 'none') {
-              notification[0].style.display = 'block';
-            }
-          //go through splitWords and if we DON'T find codeSearchFor, then hide the notification
-          } else {
-            if (notification[0].style.display = 'block') {
-              notification[0].style.display = 'none';
-            }
-          }
-        }
-      }
+      //     //go through splitWords and if we find codeSearchFor, then show notification
+      //     if (editorCode.search(codeSearchFor) !== -1) {
+      //       if (notification[0].style.display = 'none') {
+      //         notification[0].style.display = 'block';
+      //       }
+      //     //go through splitWords and if we DON'T find codeSearchFor, then hide the notification
+      //     } else {
+      //       if (notification[0].style.display = 'block') {
+      //         notification[0].style.display = 'none';
+      //       }
+      //     }
+      //   }
+      // }
     </script>
   </body>
 </html>
