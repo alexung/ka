@@ -14,6 +14,8 @@ $('#editor').keyup(function() {
   init();
 });
 
+// doesn't work for var declarations or IIFE's
+
 //init has
   //1. parse the tree with acorn
   //2. setUpStructure to get the treeArr
@@ -27,6 +29,7 @@ $('#editor').keyup(function() {
 function init() {
   var acornTree = acorn.parse(editor.getValue());
   var treeArr = api.setUpStructure(acornTree);
+  console.log(treeArr);
   var notifArr = [];
   //init notifications as empty
   $('.notifications').empty();
@@ -58,15 +61,16 @@ var api = {
   setUpStructure: function(tree) {
     //local var to hold the types in our tree
     var treeTypes = [];
+    console.log(tree);
 
     function parseTree(node) {
 
       var current = node;
 
       //parse through tree
-      while (current.body || current.consequent) {
+      while (current.body || current.consequent || current.declarations || current.init) {
 
-        current = current.body || current.consequent;
+        current = current.body || current.consequent || current.declarations || current.init;
         // console.log("current is: ", current);
 
         if (Array.isArray(current)) {
@@ -90,6 +94,7 @@ var api = {
 
     parseTree(tree);
 
+    console.log(treeTypes);
     return treeTypes;
   },
 
@@ -175,6 +180,7 @@ var api = {
   },
   //whitelist functionality
   whiteList: function(treeTypes, statementSearchingFor, notifArr) {
+    console.log(treeTypes);
     for (var i = 0; i < treeTypes.length; i++) {
       if (treeTypes[i][0] === statementSearchingFor) {
         notifArr.push("We were looking for " + statementSearchingFor + " to exist!  Congrats!");
